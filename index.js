@@ -7,17 +7,35 @@
   data.forEach(d=>{
     schools.add(d.NewPlaceName);
     schools.add(d.OldPlaceName);
-
-    console.log(d.NewPlaceName.match(/^.+立/)[0])
+    
+    let sikutyoson;
+    try{
+      sikutyoson=d.NewPlaceName.match(/^.+?立/)[0];
+    }catch{
+      sikutyoson="その他";
+    }
+    citys.add(sikutyoson)
   });
+  const $citys=document.getElementById("citys");
   const $schools=document.getElementById("schools");
   const $result=document.getElementById("result");
-  Array.from(schools).sort().forEach(school=>{
+  Array.from(citys).sort().forEach(school=>{
     const option=document.createElement("option");
     option.value=school;
     option.textContent=school;
-    $schools.append(option);
+    $citys.append(option);
   });
+  $citys.addEventListener("change",city=>{
+    $schools.innerHTML="";
+    Array.from(schools).sort().forEach(school=>{
+      const option=document.createElement("option");
+      if(school.slice(0,city.target.value.length)!==city.target.value)
+        return;
+      option.value=school;
+      option.textContent=school;
+      $schools.append(option);
+    });
+  })
   $schools.addEventListener("change",event=>{
     $result.innerHTML=`<p id="searching">けんさくちゅう...</p>`;
     const target=event.target.value;
@@ -63,4 +81,4 @@
     document.getElementById("searching").hidden=true;
   });
   document.getElementById("loding").hidden=true;
-})
+})();
